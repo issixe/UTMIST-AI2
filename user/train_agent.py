@@ -604,10 +604,10 @@ if __name__ == '__main__':
     #my_agent = CustomAgent(sb3_class=PPO, extractor=MLPExtractor)
 
     # Start here if you want to train from scratch. e.g:
-    # my_agent = SB3Agent()
+    my_agent = SB3Agent()
 
     # Start here if you want to train from a specific timestep. e.g:
-    my_agent = SB3Agent(file_path='checkpoints/experiment_10/rl_model_1000010_steps.zip')
+    # my_agent = SB3Agent(file_path='checkpoints/experiment_10/rl_model_1000010_steps.zip')
 
     # Reward manager
     reward_manager = gen_reward_manager()
