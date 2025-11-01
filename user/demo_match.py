@@ -18,4 +18,5 @@ run_real_time_match(
     agent_2=opponent,
     max_timesteps=30 * 999990000,  # Match time in frames (adjust as needed)
     resolution=CameraResolution.LOW,
+    video_path='tt_agent.mp4' #NOTE: you can change the save path of the video here
 )
