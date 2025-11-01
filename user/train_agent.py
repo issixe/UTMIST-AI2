@@ -405,6 +405,8 @@ def damage_interaction_reward(
 
     return reward / 140
 
+print("hi")
+
 
 # In[ ]:
 
@@ -493,6 +495,36 @@ def head_to_opponent(
 
     return reward
 
+def stay_on_platform(
+    env: WarehouseBrawl,
+) -> float:
+
+    # Get player object from the environment
+    player: Player = env.objects["player"]
+    reward = 1
+    # Apply penalty if player goes off platform
+    if player.prev_x <-2 and player.prev_x > -7:
+        if player.body.position.x >= -2 or player.body.position.x <= -7:
+            reward = -1
+    elif player.prev_x > 2 and player.prev_x < 7:
+        if player.body.position.x <= 2 or player.body.position.x >= 7:
+            reward = -1
+    else:
+        reward = -1
+
+    return reward
+
+def has_weapon(env: WarehouseBrawl) -> float:
+    # Get player object from the environment
+    player: Player = env.objects["player"]
+    reward = -1
+    
+    # Give reward if the player has a weapon
+    if player.weapon != "Punch":
+        reward = 1
+    
+    return reward
+
 def holding_more_than_3_keys(
     env: WarehouseBrawl,
 ) -> float:
@@ -544,11 +576,13 @@ Add your dictionary of RewardFunctions here using RewTerms
 def gen_reward_manager():
     reward_functions = {
         #'target_height_reward': RewTerm(func=base_height_l2, weight=0.0, params={'target_height': -4, 'obj_name': 'player'}),
-        'danger_zone_reward': RewTerm(func=danger_zone_reward, weight=0.5),
+        'danger_zone_reward': RewTerm(func=danger_zone_reward, weight=1.0),
+        'stay_on_platform': RewTerm(func=stay_on_platform, weight=1.0),
         'damage_interaction_reward': RewTerm(func=damage_interaction_reward, weight=1.0),
         #'head_to_middle_reward': RewTerm(func=head_to_middle_reward, weight=0.01),
-        #'head_to_opponent': RewTerm(func=head_to_opponent, weight=0.05),
+        #'head_to_opponent': RewTerm(func=head_to_opponent, weight=5),
         'penalize_attack_reward': RewTerm(func=in_state_reward, weight=-0.04, params={'desired_state': AttackState}),
+        'has_weapon_reward': RewTerm(func=has_weapon, weight=1.0),
         'holding_more_than_3_keys': RewTerm(func=holding_more_than_3_keys, weight=-0.01),
         #'taunt_reward': RewTerm(func=in_state_reward, weight=0.2, params={'desired_state': TauntState}),
     }
@@ -557,7 +591,7 @@ def gen_reward_manager():
         'on_knockout_reward': ('knockout_signal', RewTerm(func=on_knockout_reward, weight=8)),
         'on_combo_reward': ('hit_during_stun', RewTerm(func=on_combo_reward, weight=5)),
         'on_equip_reward': ('weapon_equip_signal', RewTerm(func=on_equip_reward, weight=10)),
-        'on_drop_reward': ('weapon_drop_signal', RewTerm(func=on_drop_reward, weight=15))
+        'on_drop_reward': ('weapon_drop_signal', RewTerm(func=on_drop_reward, weight=20))
     }
     return RewardManager(reward_functions, signal_subscriptions)
 
@@ -569,13 +603,13 @@ The main function runs training. You can change configurations such as the Agent
 '''
 if __name__ == '__main__':
     # Create agent
-    my_agent = CustomAgent(sb3_class=PPO, extractor=MLPExtractor)
+    #my_agent = CustomAgent(sb3_class=PPO, extractor=MLPExtractor)
 
     # Start here if you want to train from scratch. e.g:
-    #my_agent = RecurrentPPOAgent()
+    my_agent = SB3Agent()
 
     # Start here if you want to train from a specific timestep. e.g:
-    #my_agent = RecurrentPPOAgent(file_path='checkpoints/experiment_3/rl_model_120006_steps.zip')
+    # my_agent = SB3Agent(file_path='checkpoints/experiment_10/rl_model_1000010_steps.zip')
 
     # Reward manager
     reward_manager = gen_reward_manager()
@@ -591,7 +625,7 @@ if __name__ == '__main__':
         save_freq=100_000, # Save frequency
         max_saved=40, # Maximum number of saved models
         save_path='checkpoints', # Save path
-        run_name='experiment_9',
+        run_name='experiment_12',
         mode=SaveHandlerMode.FORCE # Save mode, FORCE or RESUME
     )
 
