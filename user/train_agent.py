@@ -405,8 +405,6 @@ def damage_interaction_reward(
 
     return reward / 140
 
-print("hi")
-
 
 # In[ ]:
 
