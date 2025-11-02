@@ -10,7 +10,7 @@ import os
 import sys
 from environment.agent import run_match , CameraResolution 
 from user.train_agent import gen_reward_manager
-from user.utils import get_participant_elo, update_participant_elo, elo_update
+from user.utils import get_participant_elo, update_participant_elo, elo_update, upload_video_to_supabase
 
 
 def load_agent_class(file_path):
@@ -68,6 +68,13 @@ def test_agent_batte():
             max_timesteps=30 * match_time,
             train_mode=True
             )
+
+    # Actually upload the battle video
+    upload_video_to_supabase(
+        video_path='battle.mp4',
+        agent1_username=agent1_username,
+        agent2_username=agent2_username
+    )
 
     new_elo1, new_elo2 = elo_update(agent1_elo, agent2_elo, match_result.player1_result.value)
     update_participant_elo(agent1_username, new_elo1)
