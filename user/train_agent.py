@@ -575,12 +575,12 @@ def gen_reward_manager():
     reward_functions = {
         #'target_height_reward': RewTerm(func=base_height_l2, weight=0.0, params={'target_height': -4, 'obj_name': 'player'}),
         'danger_zone_reward': RewTerm(func=danger_zone_reward, weight=1.0),
-        'stay_on_platform': RewTerm(func=stay_on_platform, weight=1.0),
+        'stay_on_platform': RewTerm(func=stay_on_platform, weight=0.6),
         'damage_interaction_reward': RewTerm(func=damage_interaction_reward, weight=1.0),
         #'head_to_middle_reward': RewTerm(func=head_to_middle_reward, weight=0.01),
         #'head_to_opponent': RewTerm(func=head_to_opponent, weight=5),
         'penalize_attack_reward': RewTerm(func=in_state_reward, weight=-0.04, params={'desired_state': AttackState}),
-        'has_weapon_reward': RewTerm(func=has_weapon, weight=1.0),
+        'has_weapon_reward': RewTerm(func=has_weapon, weight=0.8),
         'holding_more_than_3_keys': RewTerm(func=holding_more_than_3_keys, weight=-0.01),
         #'taunt_reward': RewTerm(func=in_state_reward, weight=0.2, params={'desired_state': TauntState}),
     }
@@ -623,7 +623,7 @@ if __name__ == '__main__':
         save_freq=100_000, # Save frequency
         max_saved=40, # Maximum number of saved models
         save_path='checkpoints', # Save path
-        run_name='experiment_12',
+        run_name='experiment_14',
         mode=SaveHandlerMode.FORCE # Save mode, FORCE or RESUME
     )
 
